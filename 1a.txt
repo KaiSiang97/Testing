@@ -1,0 +1,36 @@
+# Set the common archive folder path
+$archiveFolder = "C:\Archive\Desktops"
+
+# Get the default setup files in the Windows environment
+$defaultSetupFiles = @(
+    [System.Environment]::GetFolderPath('Desktop') + '\desktop.ini',
+    [System.Environment]::GetFolderPath('Desktop') + '\Recycle Bin.lnk'
+)
+
+# Function to archive a folder or file
+function Archive-Item($item) {
+    # Create the archive folder if it doesn't exist
+    if (-not (Test-Path -Path $archiveFolder)) {
+        New-Item -ItemType Directory -Path $archiveFolder | Out-Null
+    }
+    
+    # Get the item's name and extension
+    $itemName = Split-Path -Leaf $item
+    $itemExtension = (Get-Item -Path $item).Extension
+    
+    # Generate a unique archive file name
+    $archiveFileName = "{0}_{1:yyyyMMddHHmmss}{2}" -f $itemName, (Get-Date), $itemExtension
+    $archiveFilePath = Join-Path -Path $archiveFolder -ChildPath $archiveFileName
+    
+    # Archive the item
+    Move-Item -Path $item -Destination $archiveFilePath
+}
+
+# Get all items on the Desktop directory
+$desktopItems = Get-ChildItem -Path [System.Environment]::GetFolderPath('Desktop')
+
+# Filter and archive non-default Desktop folders/files
+$nonDefaultItems = $desktopItems | Where-Object { $_.FullName -notin $defaultSetupFiles }
+$nonDefaultItems | ForEach-Object { Archive-Item -item $_.FullName }
+
+Write-Host "Non-default Desktop folders/files have been archived to $archiveFolder."

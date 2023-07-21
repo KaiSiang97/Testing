@@ -1,0 +1,37 @@
+# Set the perf log name and paths
+$perfLogName = "CustomPerfLog"
+$perfLogPath = "C:\Logs\$perfLogName.blg"
+$backupFolder = "C:\Archive\PerfLogs"
+
+# Function to start the perf log
+function Start-PerfLog {
+    Write-Host "Starting Perf Log: $perfLogName"
+    logman start "$perfLogName" -pf "PerfCounters.xml" -o "$perfLogPath" -ets
+}
+
+# Function to stop the perf log and back it up
+function Stop-PerfLog {
+    Write-Host "Stopping Perf Log: $perfLogName"
+    logman stop "$perfLogName" -ets
+    
+    # Create the backup folder if it doesn't exist
+    if (-not (Test-Path -Path $backupFolder)) {
+        New-Item -ItemType Directory -Path $backupFolder | Out-Null
+    }
+    
+    # Generate a unique backup file name
+    $backupFileName = "{0}_{1:yyyyMMddHHmmss}.blg" -f $perfLogName, (Get-Date)
+    $backupFilePath = Join-Path -Path $backupFolder -ChildPath $backupFileName
+    
+    # Backup the perf log
+    Copy-Item -Path $perfLogPath -Destination $backupFilePath
+    Write-Host "Perf Log backed up to: $backupFilePath"
+}
+
+# Start perf log before exercise
+Start-PerfLog
+
+# Perform exercise here...
+
+# Stop perf log after exercise and backup the log
+Stop-PerfLog

@@ -1,0 +1,45 @@
+# Set the common archive folder path
+$archiveFolder = "C:\Archive\LogFiles"
+
+# Specify the log file paths to archive
+$logFiles = @(
+    "C:\Windows\System32\winevt\Logs\*.evtx",
+    "C:\Windows\Logs\CBS\CBS.log",
+    "C:\Windows\Logs\DISM\dism.log",
+    "C:\Windows\Logs\WindowsUpdate\WindowsUpdate.log",
+    "C:\Windows\Logs\WindowsUpdate\*.etl",
+    "C:\Windows\Logs\WindowsDefender\*.log",
+    "C:\Windows\Logs\WindowsDefender\*.etl",
+    "C:\Windows\Logs\WBEM\cimprov.log",
+    "C:\Windows\Logs\WBEM\cimprov.trace.log",
+    "C:\Windows\Logs\WBEM\cimprov\r*.log"
+)
+
+# Function to archive a file
+function Archive-File($file) {
+    # Create the archive folder if it doesn't exist
+    if (-not (Test-Path -Path $archiveFolder)) {
+        New-Item -ItemType Directory -Path $archiveFolder | Out-Null
+    }
+    
+    # Get the file's name and extension
+    $fileName = Split-Path -Leaf $file
+    $fileExtension = (Get-Item -Path $file).Extension
+    
+    # Generate a unique archive file name
+    $archiveFileName = "{0}_{1:yyyyMMddHHmmss}{2}" -f $fileName, (Get-Date), $fileExtension
+    $archiveFilePath = Join-Path -Path $archiveFolder -ChildPath $archiveFileName
+    
+    # Archive the file
+    Move-Item -Path $file -Destination $archiveFilePath
+}
+
+# Archive log files
+$logFiles | ForEach-Object {
+    $matchingFiles = Get-ChildItem -Path $_
+    $matchingFiles | ForEach-Object {
+        Archive-File -file $_.FullName
+    }
+}
+
+Write-Host "Log files have been archived to $archiveFolder."

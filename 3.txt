@@ -1,0 +1,62 @@
+# Install the ImportExcel module if not already installed
+# Install-Module -Name ImportExcel
+
+# Import the ImportExcel module
+Import-Module -Name ImportExcel
+
+# Set the paths of the original Excel sheets
+$excelSheet1 = "Path\to\Sheet1.xlsx"
+$excelSheet2 = "Path\to\Sheet2.xlsx"
+
+# Set the path of the merged Excel sheet
+$mergedSheet = "Path\to\MergedSheet.xlsx"
+
+# Set the composite key column names
+$keyColumns = @("Column1", "Column2")
+
+# Load the original sheets
+$sheet1Data = Import-Excel -Path $excelSheet1
+$sheet2Data = Import-Excel -Path $excelSheet2
+
+# Merge the sheets based on the composite key
+$mergedData = $sheet1Data | Merge-ExcelData -Path $excelSheet2 -On $keyColumns
+
+# Export the merged sheet to a new Excel file
+$mergedData | Export-Excel -Path $mergedSheet -AutoSize -NoHeader
+
+# Compare the merged sheet with the original sheets
+$comparisonResult = Compare-Object -ReferenceObject $mergedData -DifferenceObject $sheet1Data, $sheet2Data -Property $keyColumns -IncludeEqual
+
+# Display the comparison result
+$comparisonResult | Format-Table -AutoSize
+# Install the ImportExcel module if not already installed
+# Install-Module -Name ImportExcel
+
+# Import the ImportExcel module
+Import-Module -Name ImportExcel
+
+# Set the paths of the original Excel sheets
+$excelSheet1 = "Path\to\Sheet1.xlsx"
+$excelSheet2 = "Path\to\Sheet2.xlsx"
+
+# Set the path of the merged Excel sheet
+$mergedSheet = "Path\to\MergedSheet.xlsx"
+
+# Set the composite key column names
+$keyColumns = @("Column1", "Column2")
+
+# Load the original sheets
+$sheet1Data = Import-Excel -Path $excelSheet1
+$sheet2Data = Import-Excel -Path $excelSheet2
+
+# Merge the sheets based on the composite key
+$mergedData = $sheet1Data | Merge-ExcelData -Path $excelSheet2 -On $keyColumns
+
+# Export the merged sheet to a new Excel file
+$mergedData | Export-Excel -Path $mergedSheet -AutoSize -NoHeader
+
+# Compare the merged sheet with the original sheets
+$comparisonResult = Compare-Object -ReferenceObject $mergedData -DifferenceObject $sheet1Data, $sheet2Data -Property $keyColumns -IncludeEqual
+
+# Display the comparison result
+$comparisonResult | Format-Table -AutoSize
