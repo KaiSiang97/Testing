@@ -1,0 +1,48 @@
+Command To run each code
+1a:
+powershell.exe -ExecutionPolicy Bypass -File "C:\Path\to\script.ps1"
+
+1b:
+powershell.exe -ExecutionPolicy Bypass -File "C:\Path\to\script.ps1"
+
+1c:
+powershell.exe -ExecutionPolicy Bypass -File "C:\Path\to\script.ps1"
+
+
+2:
+To create a Windows scheduled task that triggers a PowerShell script to run at Windows startup and starts an application, follow these steps:
+
+Create the PowerShell script:
+Create a new text file and save it with a .ps1 extension (e.g., startup.ps1).
+Add the PowerShell script to start your application. For example, you can use the Start-Process cmdlet to launch your application. Modify the script according to your specific application startup requirements.
+Here's an example of the PowerShell script to start an application (replace "C:\Path\to\your\application.exe" with the path to your application):
+
+(powershell)
+# Start the application
+Start-Process "C:\Path\to\your\application.exe"
+Open Task Scheduler:
+
+Press the Windows key + R to open the Run dialog.
+Type taskschd.msc and press Enter to open Task Scheduler.
+Create a new task:
+
+In the Task Scheduler window, click on "Create Basic Task" or "Create Task" in the right-hand pane (depending on your Windows version).
+Follow the on-screen instructions to configure the task:
+Enter a name and optional description for the task.
+Choose "At startup" or "When the computer starts" as the trigger.
+Select "Start a program" as the action.
+Browse and select the PowerShell executable (powershell.exe) as the program to run.
+In the "Add arguments" field, enter the path to your PowerShell script file (e.g., "C:\Path\to\startup.ps1").
+Click Next and follow the remaining steps to complete the task creation.
+Set optional additional settings:
+
+In the task properties, you can set additional settings such as configuring user account credentials, setting up delays or triggers, or specifying conditions for the task to run.
+Modify the settings according to your requirements.
+Review and confirm the task configuration.
+Test the scheduled task:
+
+Restart your computer to test if the PowerShell script runs at Windows startup.
+Verify that your application starts as expected.
+By following these steps, you can create a scheduled task in Windows Task Scheduler that triggers the execution of your PowerShell script at Windows startup, ensuring that your application is launched automatically.
+
+
