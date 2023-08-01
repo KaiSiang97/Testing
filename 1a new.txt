@@ -1,0 +1,28 @@
+# Define the path to the common archive folder
+$commonArchiveFolder = "C:\Users\Kai Siang\Desktop\Archive"
+
+# Define the path to the default setup files folder (you may need to adjust this path based on your Windows version)
+$defaultSetupFilesFolder = "C:\Windows\Setup\Files"
+
+# Get the path to the current user's Desktop folder
+$desktopPath = [Environment]::GetFolderPath("Desktop")
+
+# Get the list of files and folders on the Desktop
+$desktopContents = Get-ChildItem -Path $desktopPath
+
+# Filter non-default files (exclude files in the default setup folder)
+$nonDefaultFiles = $desktopContents | Where-Object { $_.FullName -notlike "$defaultSetupFilesFolder\*" }
+
+# Create the common archive folder if it doesn't exist
+if (-Not (Test-Path -Path $commonArchiveFolder)) {
+    New-Item -ItemType Directory -Path $commonArchiveFolder | Out-Null
+}
+
+# Move the non-default files to the common archive folder
+foreach ($file in $nonDefaultFiles) {
+    Move-Item -Path $file.FullName -Destination $commonArchiveFolder
+}
+
+# Display the list of archived files
+$archivedFiles = Get-ChildItem -Path $commonArchiveFolder
+$archivedFiles | Format-Table -AutoSize

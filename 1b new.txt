@@ -1,0 +1,27 @@
+# Define the path to the common archive folder
+$commonArchiveFolder = "C:\Users\Kai Siang\Desktop\Archive"
+
+# Define the log file paths to be archived
+$logPaths = @(
+    #"C:\Windows\System32\winevt\Logs\*.evtx",
+    #"C:\Windows\Logs\*.log",
+    #"C:\Program Files\Application\Logs\*.log"
+    "C:\Users\Kai Siang\Downloads\Result\*.jpg"
+)
+
+# Create the common archive folder if it doesn't exist
+if (-Not (Test-Path -Path $commonArchiveFolder)) {
+    New-Item -ItemType Directory -Path $commonArchiveFolder | Out-Null
+}
+
+# Move the log files to the common archive folder
+foreach ($logPath in $logPaths) {
+    $logFiles = Get-Item $logPath -ErrorAction SilentlyContinue
+    if ($logFiles) {
+        Move-Item -Path $logPath -Destination $commonArchiveFolder
+    }
+}
+
+# Display the list of archived log files
+$archivedLogs = Get-ChildItem -Path $commonArchiveFolder
+$archivedLogs | Format-Table -AutoSize

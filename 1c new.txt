@@ -1,0 +1,39 @@
+# Define the name of the Data Collector Set
+$collectorSetName = "C:\Users\Kai Siang\Downloads\Result\StorGroupPolicy.log"
+
+# Define the path to the backup folder
+$backupFolder = "C:\Users\Kai Siang\Desktop\Archive"
+
+# Function to start the Data Collector Set
+function StartDataCollectorSet {
+    param($collectorSetName)
+    logman start $collectorSetName
+}
+
+# Function to stop the Data Collector Set
+function StopDataCollectorSet {
+    param($collectorSetName)
+    logman stop $collectorSetName -ets
+}
+
+# Function to backup the Data Collector Set
+function BackupDataCollectorSet {
+    param($collectorSetName, $backupFolder)
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $backupFileName = "${collectorSetName}_Backup_${timestamp}.blg"
+    $backupFilePath = Join-Path -Path $backupFolder -ChildPath $backupFileName
+    logman create-counter $collectorSetName -cf $backupFilePath
+}
+
+# Start the Data Collector Set before the exercise
+StartDataCollectorSet -collectorSetName $collectorSetName
+
+# Your exercise code goes here...
+# Replace the following line with the actual exercise code that you want to monitor with the custom counter.
+# For example, if you are running a specific application or command, place it here.
+
+# Stop the Data Collector Set after the exercise
+StopDataCollectorSet -collectorSetName $collectorSetName
+
+# Backup the Data Collector Set to the specified folder
+BackupDataCollectorSet -collectorSetName $collectorSetName -backupFolder $backupFolder
